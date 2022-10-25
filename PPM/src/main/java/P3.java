@@ -15,13 +15,22 @@ public class P3 extends P {
         JLabel label = new JLabel("", new ImageIcon(image), 0);
     }
 
+    @Override
+    public void paint(int x, int y, int color) {
+
+    }
+
     public void paint(int x, int y, int red, int greeen, int blue) {
         image.setRGB(x, y, new Color(255*red/scale,255*greeen/scale,255*blue/scale).getRGB());
     }
 
-    public void displayImage(){
-        Graphics g = getGraphics();
+    public void displayImage(Graphics g){
         g.drawImage(image,0,0,this.getWidth(),this.getHeight(),this);
+    }
+
+    @Override
+    public void paintComponent(Graphics g){
+        this.displayImage(g);
     }
 
 }

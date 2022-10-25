@@ -2,21 +2,25 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class FileReader {
+    public String getFormat() {
+        return format;
+    }
+
     String format = "";
     int x = 0, y = 0;
     int scale = -1;
     int[][][] pixels;
 
-    public synchronized InputStream getFileAsIOStream(final String fileName) {
-        InputStream ioStream = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream(fileName);
+    public synchronized InputStream getFileAsIOStream(final String fileName) throws IOException {
+        InputStream ioStream = Files.newInputStream(Paths.get(fileName));
 
         if (ioStream == null) {
             throw new IllegalArgumentException(fileName + " is not found");
