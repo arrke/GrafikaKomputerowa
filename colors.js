@@ -45,7 +45,7 @@ function insertCMYK(rgb){
 function rgb2hsv(r,g,b) {
     let v=Math.max(r,g,b), c=v-Math.min(r,g,b);
     let h= c && ((v==r) ? (g-b)/c : ((v==g) ? 2+(b-r)/c : 4+(r-g)/c)); 
-    return [60*(h<0?h+6:h), v&&c/v, v];
+    return [60*(h<0?h+6:h), v&&c/v, v/255];
   }
 
       /*
@@ -94,8 +94,10 @@ function updateAll(event){
           break;
         case 'CMYK':
             RGB = cmyk2rgb(Array.from(document.getElementsByName('CMYK')).map((elem) => elem.value || 0))
-          console.log('Mangoes and papayas are $2.79 a pound.');
-          break;
+            insertRGB(RGB);
+            insertHSV(RGB);
+            changeColorPicker(RGB)
+            break;
         default:
           console.log(`Sorry.`);
       }
@@ -145,4 +147,11 @@ function hsv2rgb(hsv){
             break
     }
     return rgb
+}
+
+function cmyk2rgb(cmyk){
+    R = 255* (1 - cmyk[0]) * (1 - cmyk[3])
+    G = 255 * (1- cmyk[1]) * (1 - cmyk[3])
+    B = 255 * (1- cmyk[2]) * (1 - cmyk[3])
+    return [R,G,B]
 }
