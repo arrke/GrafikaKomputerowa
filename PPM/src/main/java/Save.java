@@ -76,8 +76,8 @@ public class Save {
                     break;
                 }
                 int[][][] pixels = instance.pixels;
-                for(int i = 0; i < instance.x; i++){
-                    for(int j = 0; j < instance.y ; j++){
+                for(int i = 0; i < instance.y; i++){
+                    for(int j = 0; j < instance.x ; j++){
                         if(pixels[i][j].length < 3){
                             if(instance.format == "P1" || instance.format == "P4"){
                                 if(pixels[i][j][0] == 1){
@@ -111,37 +111,29 @@ public class Save {
         }
         String content = format == "P4" ||
                          format == "P5" ||
-                         format == "P6" ? null :
+                         format == "P6" ? "\n" :
                 Arrays.deepToString(newPixels)
                 .replace(",","")
                 .replace("[","")
                 .replace("]","\n");
 
-        String scale = format == "P1" ? null : Integer.toString(instance.scale);
-        List<String> lines = Arrays.asList(format, instance.x + " " + instance.y);
-        if(scale != null){
-            lines.add(scale);
-        }
-        if(content != null){
-            lines.add(content);
-        }
+        String scale = format == "P1" ? "\n" : Integer.toString(instance.scale);
+        List<String> lines = Arrays.asList(format, instance.x + " " + instance.y,scale, content);
         Path file = Paths.get(fileName);
         Files.write(file, lines, StandardCharsets.UTF_8);
-        if(content == null){
+        if(content == "\n"){
             FileOutputStream fos = new FileOutputStream(new File(fileName), true);
             DataOutputStream bos = new DataOutputStream(fos);
-            String[][][] binaryPixels = new String[instance.x][instance.y][newPixels[0][0].length];
-            for(int i = 0; i < instance.x; i++){
-                for(int j = 0; j < instance.y ; j++){
+            char[] x;
+            char[][][] binaryPixels = new char[instance.y][instance.x][newPixels[0][0].length];
+            for(int i = 0; i < instance.y; i++){
+                for(int j = 0; j < instance.x ; j++){
                     for(int z = 0; z < newPixels[0][0].length; z++){
-                        binaryPixels[i][j][z] = Integer.toHexString(newPixels[i][j][z]);
+                        fos.write((char) newPixels[j][i][z]);
+                        fos.flush();
                     }
                 }
             }
-            fos.write(Arrays.deepToString(newPixels)
-                    .replace(",","0x20")
-                    .replace("[","0x20")
-                    .replace("]","0x0a").getBytes(Charset.forName("US-ASCII")));
             fos.flush();
             fos.close();
         }
